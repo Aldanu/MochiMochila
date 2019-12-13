@@ -1,7 +1,12 @@
 package com.example.mochimochila;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -37,26 +42,39 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import javax.security.auth.login.LoginException;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef;
+    DatabaseReference myRef1;
+    DatabaseReference myRef2;
+    DatabaseReference myRef3;
+    DatabaseReference myRef4;
     DatabaseReference index = database.getReference("valor");
     Button btnOn, btnOff;
-    TextView txtArduino, txtString, txtStringLength, sensorView0, sensorView1, sensorView2, sensorView3;
-    TextView txtSendorLDR;
+    TextView txtArduino, txtString, tv_humedad;
+    TextView tv_temperatura, tex1, tex2;
+    ImageView imagen1, imagen2;
     Handler bluetoothIn;
-
+    private FusedLocationProviderClient fusedLocationClient;
     final int handlerState = 0;             //used to identify handler message
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private StringBuilder recDataString = new StringBuilder();
     int valor=0;
+    String latitud, longitud;
     private ConnectedThread mConnectedThread;
 
     // SPP UUID service - this should work for most devices
@@ -70,18 +88,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        tex1=(TextView)findViewById(R.id.text1);
+        tex2=(TextView)findViewById(R.id.text2);
         //Link the buttons and textViews to respective views
         btnOn = (Button) findViewById(R.id.buttonOn);
-        btnOff = (Button) findViewById(R.id.buttonOff);
         txtString = (TextView) findViewById(R.id.txtString);
-        //txtStringLength = (TextView) findViewById(R.id.testView1);
-        sensorView0 = (TextView) findViewById(R.id.sensorView0);
-        sensorView1 = (TextView) findViewById(R.id.sensorView1);
-        sensorView2 = (TextView) findViewById(R.id.sensorView2);
-        sensorView3 = (TextView) findViewById(R.id.sensorView3);
-
-        //txtSendorLDR = (TextView) findViewById(R.id.tv_sendorldr);
+        tv_temperatura=(TextView) findViewById(R.id.tv_temperatura);
+        tv_humedad= (TextView) findViewById(R.id.tv_humedad);
+        imagen1 = (ImageView) findViewById(R.id.image1);
+        imagen2 = (ImageView) findViewById(R.id.image2);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         database.getReference("valor").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -108,13 +124,88 @@ public class MainActivity extends AppCompatActivity {
                     // determine the end-of-line
                     if (endOfLineIndex >= 0) {
                         // make sure there data before ~
-                        String dataInPrint = recDataString.substring(0, endOfLineIndex);    // extract string
+                        String dataInPrint = recDataString.toString();    // extract string
+                        System.out.println("Tamano "+dataInPrint.length()+"\n\nCadena "+dataInPrint);
+                        try{
 
-                        //txtString.setText("Datos recibidos = " + database.getReference("message").push());
-                        Log.i(TAG, dataInPrint);
-                        myRef = database.getReference("message"+valor);
-                        myRef.setValue(dataInPrint);
-                        index.setValue((valor+1));
+
+                            String temp=dataInPrint.substring(1,6), hum=dataInPrint.substring(7,12),
+                                    pri=dataInPrint.substring(13,14), seg=dataInPrint.substring(15,16);
+                            System.out.println("temp "+temp+"\nhum "+hum+"\npri "+pri+"\nseg "+seg);
+                            if(pri.equals("1")){
+                                tex1.setText("El compartimiento 1 esta ocupado");
+                                imagen1.setImageResource(R.drawable.ocupado);
+                            }else{
+                                tex1.setText("El compartimiento 1 esta libre");
+                                imagen1.setImageResource(R.drawable.libre);
+                            }
+
+                            if(seg.equals("1")){
+                                tex2.setText("El compartimiento 2 esta ocupado");
+                                imagen2.setImageResource(R.drawable.ocupado);
+                            }else{
+                                tex2.setText("El compartimiento 2 esta libre");
+                                imagen2.setImageResource(R.drawable.libre);
+                            }
+                            Log.i(TAG, dataInPrint);
+                            if(!temp.contains("+")){
+                                myRef1 = database.getReference().child("temperatura").child("temperatura"+valor);
+                                //myRef1 = database.getReference("temperatura"+valor);
+                                myRef1.setValue(temp);
+                                tv_temperatura.setText(temp);
+                            }else{
+                                myRef1 = database.getReference().child("temperatura").child("temperatura"+valor);
+                                //myRef1 = database.getReference("temperatura"+valor);
+                                myRef1.setValue("0");
+                            }
+                            if(!hum.contains("+")){
+                                myRef2 = database.getReference().child("humedad").child("humedad"+valor);
+                                //myRef2 = database.getReference("humedad"+valor);
+                                myRef2.setValue(hum);
+                                tv_humedad.setText(hum);
+                            }else{
+                                myRef2 = database.getReference().child("humedad").child("humedad"+valor);
+                                //myRef2 = database.getReference("humedad"+valor);
+                                myRef2.setValue("0");
+                            }
+                            if(!pri.contains("+")){
+                                myRef3 = database.getReference().child("posprimero").child("pri"+valor);
+                                //myRef3 = database.getReference("pospri"+valor);
+                                myRef3.setValue(pri);
+                            }else{
+                                myRef3 = database.getReference().child("posprimero").child("pri"+valor);
+                                //myRef3 = database.getReference("pospri"+valor);
+                                myRef3.setValue("0");
+                            }
+                            if(!seg.contains("+")){
+                                myRef4 = database.getReference().child("possegundo").child("seg"+valor);
+                                //myRef4 = database.getReference("posseg"+valor);
+                                //myRef4.setValue(seg);
+                            }else{
+                                myRef4 = database.getReference().child("possegundo").child("seg"+valor);
+                                //myRef4 = database.getReference("posseg"+valor);
+                                //myRef4.setValue("0");
+                            }
+                            fusedLocationClient.getLastLocation()
+                                    .addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
+                                        @Override
+                                        public void onSuccess(Location location) {
+                                            double x=location.getLatitude();
+                                            double y=location.getLongitude();
+                                            myRef3.setValue(x);
+                                            myRef4.setValue(y);
+
+                                            System.out.println("x: "+x+"    y:"+y);
+                                            if (location != null) {
+                                                // Logic to handle location object
+                                            }
+                                        }
+                                    });
+                            index.setValue((valor+1));
+                        }catch (Exception e){
+
+                        }
+
                         //txtString.setText("Datos recibidos = " + myRef.getRef().child("message"));
                         int dataLength = dataInPrint.length();       //get length of data received
                         //txtStringLength.setText("Tamaño del String = " + String.valueOf(dataLength));
@@ -135,19 +226,10 @@ public class MainActivity extends AppCompatActivity {
         checkBTState();
 
 
-        // Set up onClick listeners for buttons to send 1 or 0 to turn on/off LED
-        btnOff.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                Log.i(TAG, "Mvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-                mConnectedThread.write("2\n");    // Send "0" via Bluetooth
-                Toast.makeText(getBaseContext(), "Apagar el LED", Toast.LENGTH_SHORT).show();
-                txtString.setText("Deberia estar recibiendo datos");
-            }
-        });
+
 
         btnOn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Log.i(TAG, "ccccccccccccccccccccccccccccccccccc " );
                 mConnectedThread.write("1");    // Send "1" via Bluetooth
                 Toast.makeText(getBaseContext(), "Encender el LED", Toast.LENGTH_SHORT).show();
             }
@@ -198,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
 
         //I send a character when resuming.beginning transmission to check device is connected
         //If it is not an exception will be thrown in the write method and finish() will be called
-        mConnectedThread.write("Rodo Puto");
     }
 
     @Override
@@ -279,5 +360,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    private LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+            latitud=mLastLocation.getLatitude()+"";
+            longitud=mLastLocation.getLongitude()+"";
+        }
+    };
 }

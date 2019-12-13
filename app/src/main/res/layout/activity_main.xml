@@ -4,23 +4,157 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#B3B5BB"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-
-
-    <Button
-        android:id="@+id/buttonOn"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LED ON" />
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="BEYPACK"
+        android:textAlignment="center"/>
 
-    <Button
-        android:id="@+id/buttonOff"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:orientation="horizontal"
+        android:padding="10px"
+        android:layout_margin="20px"
+        android:background="#E3ECEC">
+
+        <Button
+            android:id="@+id/buttonOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowRadius="10px"
+            android:background="#D2E0F0"
+            android:text="ALERTA" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:background="#E3ECEC"
+        android:orientation="vertical"
+        android:padding="10px"
+        android:layout_margin="20px">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temperatura"
+            android:fontFamily="@string/common_signin_button_text_long"
+            android:textSize="50px"
+            android:layout_marginLeft="75px"
+            android:textColor="#000"
+
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src=""/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="75px"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:text="0"
+            android:layout_marginLeft="100px"
+            android:id="@+id/tv_temperatura"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:background="#E3ECEC"
+        android:orientation="vertical"
+        android:padding="10px"
+        android:layout_margin="20px">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Humedad"
+            android:fontFamily="@string/common_signin_button_text_long"
+            android:textSize="50px"
+            android:layout_marginLeft="75px"
+            android:textColor="#000"
+            />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="75px"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:text="0"
+            android:id="@+id/tv_humedad"
+            android:layout_marginLeft="100px"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LED OFF" />
+        android:background="#B3B5BB"
+        android:layout_margin="20px"
+        android:orientation="horizontal">
 
-<TextView
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="15px"
+            android:background="#E3ECEC">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="60px"
+                android:text="Compartimiento 1"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="100px"
+                android:src="@mipmap/ic_launcher_round"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="15px"
+            android:background="#E3ECEC">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Compartimiento 2"
+                android:textSize="60px" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="100px"
+                android:src="@mipmap/ic_launcher_round"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
     android:id="@+id/sensorView0"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
@@ -28,10 +162,13 @@
         android:id="@+id/sensorView1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
-<TextView
+
+    <TextView
     android:id="@+id/sensorView2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
+
+
     <TextView
         android:id="@+id/sensorView3"
         android:layout_width="wrap_content"

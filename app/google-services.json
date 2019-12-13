@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1063895386525",
+    "firebase_url": "https://mochimochila-ee136.firebaseio.com",
+    "project_id": "mochimochila-ee136",
+    "storage_bucket": "mochimochila-ee136.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063895386525:android:4ac4616a81444b26f58774",
+        "android_client_info": {
+          "package_name": "com.example.mochimochila"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1063895386525-nmo8vl9ichobnef7i6itu3cffk4oh1su.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mochimochila",
+            "certificate_hash": "c528bcc78cd648e0b2caa121222f2bb3edecb297"
+          }
+        },
+        {
+          "client_id": "1063895386525-grk6o876u0dm2mn3pe5c8rgqtanuljks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM6nkdpD1VjCcMEq83TP7aZk6Si97pdSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1063895386525-grk6o876u0dm2mn3pe5c8rgqtanuljks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

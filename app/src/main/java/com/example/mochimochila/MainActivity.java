@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -38,7 +40,8 @@ import android.widget.Toast;
 import javax.security.auth.login.LoginException;
 
 public class MainActivity extends AppCompatActivity {
-
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("message");
     Button btnOn, btnOff;
     TextView txtArduino, txtString, txtStringLength, sensorView0, sensorView1, sensorView2, sensorView3;
     TextView txtSendorLDR;
@@ -89,24 +92,25 @@ public class MainActivity extends AppCompatActivity {
                         // make sure there data before ~
                         String dataInPrint = recDataString.substring(0, endOfLineIndex);    // extract string
                         txtString.setText("Datos recibidos = " + dataInPrint);
-                        Log.i(TAG, "Mvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"+dataInPrint);
+                        Log.i(TAG, dataInPrint);
+                        myRef.setValue(dataInPrint);
                         int dataLength = dataInPrint.length();       //get length of data received
                         //txtStringLength.setText("Tamaño del String = " + String.valueOf(dataLength));
 
                         if (recDataString.charAt(0) == '#')        //if it starts with # we know it is what we are looking for
                         {
                             String sensor0 = recDataString.substring(1, 5);             //get sensor value from string between indices 1-5
-                            String sensor1 = recDataString.substring(6, 10);            //same again...
-                            String sensor2 = recDataString.substring(11, 15);
-                            String sensor3 = recDataString.substring(16, 20);
+                            //String sensor1 = recDataString.substring(6, 10);            //same again...
+                            //String sensor2 = recDataString.substring(11, 15);
+                            //String sensor3 = recDataString.substring(16, 20);
 
                             if(sensor0.equals("1.00"))
                                 sensorView0.setText("Encendido"); //update the textviews with sensor values
                             else
                                 sensorView0.setText("Apagado"); //update the textviews with sensor values
-                            sensorView1.setText(sensor1);
-                            sensorView2.setText(sensor2);
-                            sensorView3.setText(sensor3);
+                            //sensorView1.setText(sensor1);
+                            //sensorView2.setText(sensor2);
+                            //sensorView3.setText(sensor3);
                             //sensorView3.setText(" Sensor 3 Voltage = " + sensor3 + "V");
                         }
                         recDataString.delete(0, recDataString.length());      //clear all string data
